@@ -2,6 +2,10 @@
 
 ATLAS MAX is a private, static No Man’s Sky technology planner with a goal-first layout optimizer and a functional Corvette construction workshop. Everything runs in the browser. There are no accounts, API keys, telemetry, paid dependencies or server-side services in the portable application.
 
+## Command-deck interface refresh
+
+The redesigned interface retains the original planner and PDF exporter while adding a live mission-control telemetry card, illustrated equipment tabs, clearly separated setup and technology workflows, a higher-contrast blueprint matrix, readable module tiles and tool modes, and dedicated analysis/export cards. The telemetry updates with equipment, mission profile, class, installed capacity and optimization status. Responsive breakpoints support mobile, tablet and desktop screens without horizontal page overflow; only the technology grid itself scrolls horizontally when necessary. All five signal themes remain available.
+
 ## Equipment and features
 
 Plan Exosuit, Multi-Tool, Starship, Freighter, Exocraft and Corvette inventories. The local catalogue contains 220 technology definitions and 86 Corvette construction components, including FORSAKEN additions. Living ships, Sentinel interceptors and individual Exocraft have separate compatibility filters.

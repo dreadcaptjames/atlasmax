@@ -1,13 +1,120 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#ed6557"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ATLAS MAX"><meta name="description" content="A private, browser-based No Man’s Sky technology planner and Corvette workshop."><title>ATLAS MAX · Technology Planner</title><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./assets/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="./assets/apple-touch-icon.png"><link rel="stylesheet" href="./style.css"></head>
-<body><div class="app-shell"><header class="masthead"><a class="brand" href="./"><img src="./assets/icon.svg" width="48" height="48" alt="ATLAS triangular emblem"><span>ATLAS <b>MAX</b><small>NO MAN’S SKY · TECHNOLOGY PLANNER</small></span></a><div class="header-meta"><span class="status-dot"></span> LOCAL SYSTEMS ONLINE <button id="help" class="subtle">Flight manual ↗</button></div></header>
-<section class="intro"><div><p class="eyebrow">ENGINEER YOUR NEXT FRONTIER</p><h1>Every slot.<br class="mobile-break"> <span>More possibility.</span></h1><p>Build with intent. Align your systems. Explore beyond.</p></div><div class="version"><span>DATA REFERENCE</span><strong>FORSAKEN <em>7.10</em></strong><small>Mechanics reviewed · 01 NOV 2026</small></div></section>
-<nav id="equipment-nav" aria-label="Equipment categories"></nav>
-<main><aside class="panel config"><div class="panel-title"><span class="step">01</span><h2>Configure equipment</h2></div><div class="fields"><label>Build name<input id="build-name" maxlength="80" placeholder="Untitled expedition"></label><div class="two"><label>Variant<select id="type"></select></label><label>Class<select id="class"></select></label></div><label>Mission profile<select id="goal"></select></label><label id="primary-label">Primary weapon priority<select id="primary"></select></label><div class="two"><label>Columns<select id="width"></select></label><label>Rows<select id="height"></select></label></div><p id="capacity-note" class="muted"></p></div>
-<div class="divider"></div><div class="panel-title"><span class="step">02</span><h2>Installed technology</h2><span id="selected-count" class="badge">0</span></div><div class="search-wrap"><input id="search" type="search" placeholder="Search technology…" aria-label="Search technology"></div><div class="catalog-actions"><button id="starter" class="subtle">+ Essential systems</button><button id="clear-tech" class="subtle">Clear</button></div><div id="catalog" class="catalog"></div></aside>
-<section class="workspace"><section id="workshop" class="panel workshop" hidden><div class="panel-title"><span class="step">C</span><h2>Corvette workshop</h2><span class="badge">CONSTRUCTION → TECHNOLOGY</span></div><p class="muted">Functional parts generate their mapped technology. The mission profile above controls construction focus and slot priority together.</p><div class="two"><input id="part-search" type="search" placeholder="Find a component…" aria-label="Find construction component"><select id="part-category" aria-label="Construction category"></select></div><div id="parts" class="parts"></div><div id="construction-summary" class="muted"></div></section>
-<section class="panel inventory-panel"><div class="inventory-heading"><div><p class="eyebrow">TECHNOLOGY INVENTORY</p><h2 id="grid-title">Starship systems</h2></div><div id="grid-stats" class="grid-stats"></div></div><div class="toolbar" role="group" aria-label="Grid editing mode"><button data-mode="inspect" class="active">⌖ Inspect</button><button data-mode="supercharged">ϟ Supercharge</button><button data-mode="blocked">⊘ Block slot</button><button data-mode="move">↔ Move / swap</button><button data-mode="pin">⌑ Pin module</button></div><p id="mode-hint" class="grid-hint">Select a module to inspect its source, classification and connections.</p><div class="grid-scroll"><div id="grid" role="group" aria-label="Technology inventory"></div></div><div class="grid-key"><span><i class="gold"></i>Supercharged slot</span><span>⌑ Pinned technology</span><span>1:1 = column : row</span></div><div class="optimize-bar"><div><strong id="layout-status">Ready for your coordinates</strong><small id="layout-caption">Mark your actual supercharged slots before optimizing.</small></div><button id="optimize" class="primary">Optimize layout <span>↗</span></button></div></section>
-<div id="feedback" role="status" aria-live="polite"></div><section class="analysis-row"><div class="panel"><p class="eyebrow">LAYOUT INTELLIGENCE</p><h3>Priority, then proximity.</h3><div id="analysis"><p class="muted">Add technology and run optimization to see family connections and allocation decisions.</p></div></div><div class="panel"><p class="eyebrow">BUILD ARCHIVE</p><h3>Take your blueprint with you.</h3><p class="muted">A printable report for the journey. An editable backup for the next iteration.</p><div class="export-buttons"><button id="pdf">↓ Export PDF</button><button id="backup">↓ Backup JSON</button><button id="import-button">↑ Import JSON</button><input type="file" id="import" accept="application/json,.json" hidden></div><button id="reset" class="subtle danger">Reset this equipment</button></div></section>
-<details class="panel evidence"><summary>Data confidence & how optimization works</summary><p>This is a deterministic, goal-first layout solver. It assigns eligible supercharged slots by your mission profile, connects technology groups, then refines confirmed adjacency and fragmentation. It does not calculate exact DPS, range or hidden game multipliers, and does not claim a global optimum.</p><p>“Confirmed contact” means the dataset identifies the pair as a game adjacency relationship. Grouping reactors or habitation together is an organizational preference unless a specific relationship is confirmed. Procedural rolls vary. Use module preference to rank your strongest rolls within equal priority.</p><p>Source references appear in each module inspector. Unverified part mappings remain visible in the construction manifest and do not silently become fabricated technology. Match the generated inventory against your in-game equipment, particularly after updates.</p><div id="sources"></div></details></section></main>
-<footer><div class="footer-top"><div class="brand mini">△ ATLAS <b>MAX</b><small>YOUR BUILD. YOUR FRONTIER.</small></div><div><p class="eyebrow">CHOOSE YOUR SIGNAL</p><div id="themes" class="themes"></div></div></div><a class="companion" href="https://dreadcaptjames.github.io/nmscraftingrefining/" target="_blank" rel="noopener noreferrer"><span>NMS Crafting & Refining Guide</span><span>Continue your journey ↗</span></a><p class="fine">Unofficial fan project. No Man’s Sky is a trademark of Hello Games. Builds stay in your browser; only your theme preference is remembered automatically.</p></footer></div>
-<dialog id="inspector"><button class="close" aria-label="Close inspector">×</button><div id="inspector-content"></div></dialog><dialog id="manual"><button class="close" aria-label="Close manual">×</button><p class="eyebrow">QUICK START</p><h2>Your build, in six steps.</h2><ol><li>Choose equipment, variant, class and mission profile.</li><li>Add installed technology. Corvette construction parts generate their corresponding modules.</li><li>Set the grid to match your inventory. Block unavailable slots.</li><li>Select <b>Supercharge</b> and mark the actual gold slots in your game. Fresh visits always start with none marked.</li><li>Optimize. Inspect module details; move, swap or pin any module when you need a specific placement.</li><li>Export a PDF report or save a JSON backup to resume later.</li></ol><p>Preferences rank equal-priority modules; they are not fictional stat multipliers. Your goal always wins over those preferences. Use the in-game stats to verify the final result.</p><p><b>Install on iPhone:</b> Open in Safari, choose Share → Add to Home Screen. On supported desktop browsers, use the browser’s install command.</p></dialog><script type="module" src="./js/app.js"></script></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#ef6b5b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ATLAS MAX">
+  <meta name="description" content="A private, browser-based No Man’s Sky technology planner and Corvette workshop.">
+  <title>ATLAS MAX · Technology Planner</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div class="app-shell">
+  <header class="masthead">
+    <a class="brand" href="./" aria-label="ATLAS MAX home">
+      <span class="brand-mark"><img src="./assets/icon.svg" width="44" height="44" alt=""></span>
+      <span class="brand-wordmark">ATLAS <b>MAX</b><small>TECHNOLOGY OPTIMIZATION SYSTEM</small></span>
+    </a>
+    <div class="header-meta">
+      <span class="status-pill"><span class="status-dot"></span> SYSTEMS ONLINE</span>
+      <span class="header-divider" aria-hidden="true"></span>
+      <button id="help" class="manual-trigger" type="button"><span aria-hidden="true">◈</span> Flight manual <span aria-hidden="true">↗</span></button>
+    </div>
+  </header>
+
+  <section class="intro" aria-label="Mission control">
+    <div class="hero-copy">
+      <p class="eyebrow"><span class="eyebrow-pip"></span> MISSION CONTROL <span class="eyebrow-separator">/</span> ATLAS MAX</p>
+      <h1>Build beyond<br><span>the horizon<span class="period">.</span></span></h1>
+      <p class="hero-description">Precision engineering for the infinite frontier. Configure, optimize and archive every system of your expedition.</p>
+      <div class="hero-highlights"><span><i class="hero-dot"></i> PRIVATE BY DESIGN</span><span>◈ GOAL-FIRST OPTIMIZATION</span><span>↗ FIELD-READY EXPORTS</span></div>
+    </div>
+    <div class="hero-console" aria-label="Current build summary">
+      <div class="orbital-art" aria-hidden="true"><span class="orbit orbit-1"></span><span class="orbit orbit-2"></span><span class="orbit orbit-3"></span><span class="orbital-core"><img src="./assets/icon.svg" alt=""></span><span class="orbit-point point-a"></span><span class="orbit-point point-b"></span><span class="orbit-point point-c"></span></div>
+      <div class="console-top"><span><i class="live-light"></i> ACTIVE BLUEPRINT</span><span class="console-code">SYS / 001</span></div>
+      <div class="console-name" id="hero-equipment">STARSHIP</div>
+      <div class="console-sub"><span id="hero-profile">Balanced explorer</span><span id="hero-class">S-CLASS</span></div>
+      <div class="console-progress-heading"><span>TECHNOLOGY CAPACITY</span><b id="hero-used">0 / 0</b></div>
+      <div class="console-track" role="presentation"><span id="hero-fill"></span></div>
+      <div class="console-bottom"><span>FORSAKEN 7.10 <span class="muted-slash">/</span> DATA REF.</span><span id="hero-ready">AWAITING MODULES</span></div>
+    </div>
+  </section>
+
+  <section class="equipment-switcher" aria-label="Choose equipment platform">
+    <div class="section-overline"><span><span class="overline-number">01</span> SELECT EQUIPMENT PLATFORM</span><small>6 SUPPORTED SYSTEM TYPES</small></div>
+    <nav id="equipment-nav" aria-label="Equipment categories"></nav>
+  </section>
+
+  <main>
+    <aside class="panel config" aria-label="Build configuration and technology catalog">
+      <div class="panel-title"><span class="step">01</span><div><p class="panel-kicker">BUILD SETUP</p><h2>Configure equipment</h2></div></div>
+      <div class="fields">
+        <label>Build designation<input id="build-name" maxlength="80" placeholder="e.g. Event Horizon Mk II"></label>
+        <div class="two"><label>Variant<select id="type"></select></label><label>Equipment class<select id="class"></select></label></div>
+        <label>Mission profile<select id="goal"></select></label>
+        <label id="primary-label">Primary weapon priority<select id="primary"></select></label>
+        <div class="two"><label>Grid columns<select id="width"></select></label><label>Grid rows<select id="height"></select></label></div>
+        <p id="capacity-note" class="muted capacity-note"></p>
+      </div>
+      <div class="divider"></div>
+      <div class="panel-title catalog-heading"><span class="step">02</span><div><p class="panel-kicker">SYSTEM LIBRARY</p><h2>Installed technology</h2></div><span id="selected-count" class="badge">0</span></div>
+      <div class="search-wrap"><span class="search-glyph" aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Find a technology module…" aria-label="Search technology"></div>
+      <div class="catalog-actions"><button id="starter" class="subtle" type="button">＋ Add essential systems</button><button id="clear-tech" class="subtle danger" type="button">Clear all</button></div>
+      <div id="catalog" class="catalog"></div>
+      <p class="catalog-footnote">Modules are placed on the blueprint as they are added.</p>
+    </aside>
+
+    <section class="workspace" aria-label="Technology workspace">
+      <section id="workshop" class="panel workshop" hidden>
+        <div class="panel-title"><span class="step">C</span><div><p class="panel-kicker">CONSTRUCTION PLANNER</p><h2>Corvette workshop</h2></div><span class="badge">PARTS → TECHNOLOGY</span></div>
+        <p class="muted">Functional parts generate their mapped technology. Your mission profile controls construction focus and slot priority.</p>
+        <div class="two"><input id="part-search" type="search" placeholder="Find a component…" aria-label="Find construction component"><select id="part-category" aria-label="Construction category"></select></div>
+        <div id="parts" class="parts"></div><div id="construction-summary" class="muted"></div>
+      </section>
+
+      <section class="panel inventory-panel">
+        <div class="inventory-heading">
+          <div class="inventory-heading-copy"><p class="eyebrow"><span class="eyebrow-pip"></span> LIVE TECHNOLOGY BLUEPRINT</p><h2 id="grid-title">Starship systems</h2><p class="inventory-subtitle">Arrange your systems. Define your slots. Optimize the journey.</p></div>
+          <div id="grid-stats" class="grid-stats"></div>
+        </div>
+        <div class="toolbar-heading"><span>EDITING MODE</span><small>SELECT A TOOL TO INTERACT WITH THE GRID</small></div>
+        <div class="toolbar" role="group" aria-label="Grid editing mode">
+          <button data-mode="inspect" class="active" type="button" aria-pressed="true"><span class="tool-icon" aria-hidden="true">⌖</span> Inspect</button>
+          <button data-mode="supercharged" type="button" aria-pressed="false"><span class="tool-icon gold-text" aria-hidden="true">ϟ</span> Supercharge</button>
+          <button data-mode="blocked" type="button" aria-pressed="false"><span class="tool-icon" aria-hidden="true">⊘</span> Block slot</button>
+          <button data-mode="move" type="button" aria-pressed="false"><span class="tool-icon" aria-hidden="true">↔</span> Move / swap</button>
+          <button data-mode="pin" type="button" aria-pressed="false"><span class="tool-icon" aria-hidden="true">⌑</span> Pin module</button>
+        </div>
+        <p id="mode-hint" class="grid-hint">Select a module to inspect its source, classification and connections.</p>
+        <div class="blueprint-frame">
+          <div class="blueprint-bar"><span><i class="blueprint-indicator"></i> INVENTORY MATRIX</span><span id="matrix-size">—</span></div>
+          <div class="grid-scroll"><div id="grid" role="group" aria-label="Technology inventory"></div></div>
+          <div class="blueprint-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        </div>
+        <div class="grid-key"><span><i class="gold"></i> Supercharged</span><span><span class="legend-symbol">⌑</span> Pinned module</span><span><span class="legend-symbol">⊘</span> Unavailable</span><span class="grid-coordinate-legend">COL : ROW COORDINATES</span></div>
+        <div class="optimize-bar">
+          <div class="optimize-copy"><span class="optimize-indicator">◉</span><div><strong id="layout-status">Ready for your coordinates</strong><small id="layout-caption">Mark your actual supercharged slots before optimizing.</small></div></div>
+          <button id="optimize" class="primary" type="button">Optimize layout <span>↗</span></button>
+        </div>
+      </section>
+
+      <div id="feedback" role="status" aria-live="polite"></div>
+      <section class="analysis-row" aria-label="Analysis and export tools">
+        <div class="panel analysis-card"><div class="card-topline"><span>03 / LAYOUT INTELLIGENCE</span><span class="card-top-icon">⌘</span></div><h3>Engineering analysis<span class="period">.</span></h3><p class="card-description">Measured connections and system-group integrity for your current build.</p><div id="analysis"><p class="muted">Add technology and run optimization to see family connections and allocation decisions.</p></div></div>
+        <div class="panel archive-card"><div class="card-topline"><span>04 / BUILD ARCHIVE</span><span class="card-top-icon">↗</span></div><h3>Take your blueprint with you<span class="period">.</span></h3><p class="card-description">Export the engineering dossier or preserve an editable build for your next expedition.</p><div class="export-buttons"><button id="pdf" class="export-main" type="button"><span class="export-symbol">↓</span><span>Export PDF <small>Engineering dossier</small></span><span class="export-arrow">↗</span></button><button id="backup" type="button">↓ Backup JSON</button><button id="import-button" type="button">↑ Import JSON</button><input type="file" id="import" accept="application/json,.json" hidden></div><button id="reset" class="subtle danger reset-link" type="button">Reset this equipment ↗</button></div>
+      </section>
+      <details class="panel evidence"><summary><span>TECHNICAL REFERENCE <span class="reference-number">/ 05</span></span> Data confidence & how optimization works <span class="details-plus" aria-hidden="true">+</span></summary><div class="evidence-body"><p>This is a deterministic, goal-first layout solver. It assigns eligible supercharged slots by your mission profile, connects technology groups, then refines confirmed adjacency and fragmentation. It does not calculate exact DPS, range or hidden game multipliers, and does not claim a global optimum.</p><p>“Confirmed contact” means the dataset identifies the pair as a game adjacency relationship. Grouping reactors or habitation together is an organizational preference unless a specific relationship is confirmed. Procedural rolls vary. Use module preference to rank your strongest rolls within equal priority.</p><p>Source references appear in each module inspector. Unverified part mappings remain visible in the construction manifest and do not silently become fabricated technology. Match the generated inventory against your in-game equipment, particularly after updates.</p><div id="sources"></div></div></details>
+    </section>
+  </main>
+
+  <footer><div class="footer-top"><div class="brand mini"><img src="./assets/icon.svg" alt="" width="26" height="26"><span>ATLAS <b>MAX</b><small>YOUR BUILD. YOUR FRONTIER.</small></span></div><div class="theme-setting"><p class="eyebrow">CHOOSE YOUR SIGNAL</p><div id="themes" class="themes"></div></div></div><a class="companion" href="https://dreadcaptjames.github.io/nmscraftingrefining/" target="_blank" rel="noopener noreferrer"><span><span class="companion-icon">◈</span> NMS Crafting & Refining Guide</span><span>Explore companion tool ↗</span></a><p class="fine">UNOFFICIAL FAN PROJECT · NO MAN'S SKY IS A TRADEMARK OF HELLO GAMES. BUILDS STAY IN YOUR BROWSER. ONLY THE THEME PREFERENCE IS STORED AUTOMATICALLY.</p></footer>
+</div>
+<dialog id="inspector"><button class="close" aria-label="Close inspector" type="button">×</button><div id="inspector-content"></div></dialog>
+<dialog id="manual"><button class="close" aria-label="Close manual" type="button">×</button><p class="eyebrow">FLIGHT MANUAL / QUICK START</p><h2>Your build, in six steps.</h2><ol><li>Choose equipment, variant, class and mission profile.</li><li>Add installed technology. Corvette construction parts generate their corresponding modules.</li><li>Set the grid to match your inventory. Block unavailable slots.</li><li>Select <b>Supercharge</b> and mark the actual gold slots in your game. Fresh visits always start with none marked.</li><li>Optimize. Inspect module details; move, swap or pin any module when you need a specific placement.</li><li>Export a PDF report or save a JSON backup to resume later.</li></ol><p>Preferences rank equal-priority modules; they are not fictional stat multipliers. Your goal always wins over those preferences. Use the in-game stats to verify the final result.</p><p><b>Install on iPhone:</b> Open in Safari, choose Share → Add to Home Screen. On supported desktop browsers, use the browser’s install command.</p></dialog>
+<script type="module" src="./js/app.js"></script>
+</body></html>
