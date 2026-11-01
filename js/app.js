@@ -3,6 +3,7 @@ import {parts,corvetteCaveats} from '../data/corvette.js';
 import {goalNames,fresh,available,modules,scLimit,capacity,reconcile,issues,report,exportBuild,importBuild,decorate} from './model.js';
 import {analyze,neighbors,priority} from './engine.js';
 import {makePDF} from './pdf.js';
+import {captureGrid} from './grid-capture.js';
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const title=s=>s.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
 let state=fresh(),mode='inspect',selectedSlot=null,lastResult=null,busy=false;const drafts={};
@@ -34,7 +35,23 @@ for(const k of ['width','height'])$(k).onchange=()=>{state[k]=Number($(k).value)
 $('search').oninput=renderCatalog;$('catalog').onclick=e=>{const b=e.target.closest('[data-tech]');if(b)changeQuantity(b.dataset.tech,Number(b.dataset.delta),false);};$('part-search').oninput=renderParts;$('part-category').onchange=renderParts;$('parts').onclick=e=>{const info=e.target.closest('[data-part-info]');if(info)return showPart(info.dataset.partInfo);const b=e.target.closest('[data-part]');if(b)changeQuantity(b.dataset.part,Number(b.dataset.delta),true);};
 $('starter').onclick=()=>{const ts=available(state).filter(t=>t.kind==='core');const nonweapons=ts.filter(t=>!t.tags.includes('combat'));for(const t of nonweapons)if(!modules(state).some(m=>m.family===t.family))addDependencies(t.id);invalidate();renderCatalog();feedback('Essential systems added. Select the upgrades installed in your equipment.');};$('clear-tech').onclick=()=>{state.selected={};state.details={};state.fixed={};invalidate();renderCatalog();};
 for(const b of document.querySelectorAll('[data-mode]'))b.onclick=()=>{mode=b.dataset.mode;selectedSlot=null;document.querySelectorAll('[data-mode]').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',String(x===b));});$('mode-hint').textContent={inspect:'Select a module to inspect its source, classification and connections.',supercharged:'Click the slots that are supercharged in your game. Gold outlines stay fixed during optimization.',blocked:'Click unavailable slots to block them. Installed modules move to other available positions.',move:'Select a source slot, then a destination to move or swap modules.',pin:'Click a module to pin or unpin its current position. Pins constrain optimization.'}[mode];renderGrid();};$('grid').onclick=e=>{const b=e.target.closest('[data-slot]');if(b)slotClick(Number(b.dataset.slot));};$('optimize').onclick=runOptimizer;
-$('backup').onclick=()=>{try{safeReport();download(exportBuild(state),filename('json'),'application/json');feedback('Editable JSON backup downloaded.');}catch(e){feedback(e.message,true);}};$('pdf').onclick=()=>{try{const r=safeReport();if(!modules(state).length)throw Error('Add technology before exporting a report.');download(makePDF(state,modules(state),r,{equipment:equipment[state.equipment].name,goal:goalNames[state.goal],manifest:parts.filter(p=>state.construction[p.id]).map(p=>({...p,count:state.construction[p.id]}))}),filename('pdf'),'application/pdf');feedback('PDF report downloaded. Your editable backup is available separately.');}catch(e){feedback(e.message,true);}};
+$('backup').onclick=()=>{try{safeReport();download(exportBuild(state),filename('json'),'application/json');feedback('Editable JSON backup downloaded.');}catch(e){feedback(e.message,true);}};$('pdf').onclick=async()=>{
+  if($('pdf').disabled)return;
+  $('pdf').disabled=true;
+  try {
+    const r=safeReport(),ms=modules(state);
+    if(!ms.length)throw Error('Add technology before exporting a report.');
+    feedback('Preparing the blueprint from your actual technology grid...');
+    let gridSnapshot;
+    try {gridSnapshot=await captureGrid($('grid'));}
+    catch(err){console.warn('Using the PDF vector grid fallback:',err);}
+    const metadata={equipment:equipment[state.equipment].name,goal:goalNames[state.goal],
+      manifest:parts.filter(p=>state.construction[p.id]).map(p=>({...p,count:state.construction[p.id]})),gridSnapshot};
+    download(makePDF(state,ms,r,metadata),filename('pdf'),'application/pdf');
+    feedback(gridSnapshot?'Blueprint PDF downloaded with the original inventory grid.':'Blueprint PDF downloaded using the compatibility grid renderer.');
+  } catch(e){feedback(e.message,true);}
+  finally{$('pdf').disabled=false;}
+};
 $('import-button').onclick=()=>$('import').click();$('import').onchange=async()=>{const f=$('import').files[0];if(!f)return;try{if(f.size>2000000)throw Error('Backup is too large.');const next=importBuild(await f.text());state=next;lastResult=null;renderAll();feedback('Build restored, including explicit supercharged positions and Corvette construction.');}catch(e){feedback('Import rejected: '+e.message,true);}finally{$('import').value='';}};
 $('reset').onclick=()=>{state=fresh(state.equipment);lastResult=null;renderAll();feedback('Equipment reset. All supercharged positions are empty.');};$('help').onclick=()=>$('manual').showModal();document.querySelectorAll('dialog .close').forEach(b=>b.onclick=()=>b.closest('dialog').close());
 const themes=[['Atlas','#ef6b5b','239,107,91'],['Void Mother','#b095f3','176,149,243'],['Vy’keen','#8dc88a','141,200,138'],['Gek','#e8a55c','232,165,92'],['Korvax','#71b9ee','113,185,238']];function setTheme(name){const t=themes.find(t=>t[0]===name)||themes[0];document.documentElement.style.setProperty('--accent',t[1]);document.documentElement.style.setProperty('--accent-rgb',t[2]);document.querySelector('meta[name=theme-color]').content=t[1];$('themes').innerHTML=themes.map(v=>`<button data-theme="${v[0]}" style="--theme-color:${v[1]}" class="${v===t?'active':''}" aria-pressed="${v===t}">${v[0]}</button>`).join('');try{localStorage.setItem('atlas-max-theme',t[0]);}catch{}}

@@ -12,7 +12,7 @@ Plan Exosuit, Multi-Tool, Starship, Freighter, Exocraft and Corvette inventories
 - Source-linked technology inspection, procedural-module labels, observed-stat notes and preference ranking.
 - Corvette construction-to-technology mappings, quantity tracking and preserved manifests.
 - Distinct technology identifiers and family colors; gold supercharged markings across all five themes.
-- Downloadable vector PDF reports and separately editable JSON backups.
+- Dark engineering-dossier PDFs with a high-resolution capture of the live technology grid, plus separately editable JSON backups.
 - Responsive desktop, tablet and phone interface, offline cache and Home Screen icons.
 
 ## Getting started
@@ -46,7 +46,7 @@ Shared Corvette system caps and build-order effects still require matching the a
 
 ## Export and import
 
-**Export PDF** creates a local, paginated A4 document with the colored grid, coordinates, supercharged markings, exact module names, grouping metrics, warnings, source references and Corvette construction manifest. The report uses standard PDF text and vector graphics; no external service is contacted.
+**Export PDF** creates a local, multi-page engineering dossier: a wide blueprint page that embeds a high-resolution capture of the *actual application grid* (including its module names, icons, coordinates, and supercharged/pinned markings), followed by a two-column component index, Corvette construction manifest when relevant, and adjacency/evidence pages. Supporting content remains PDF text; a vector-grid compatibility fallback is used if a browser blocks grid capture. All pages have dark ATLAS MAX styling, and no external service is contacted. The blueprint page uses a wider paper size to preserve grid readability; manifest pages are A4 portrait.
 
 **Backup JSON** preserves equipment, goal, selected weapon, installed quantities, construction selections, module labels/notes, fixed placements and explicit supercharged positions. **Import JSON** validates its schema, compatibility, counts, prerequisites, grid and module identities before replacing the current build. Malformed or incompatible backups are rejected. PDF files cannot be used to restore editable builds.
 
