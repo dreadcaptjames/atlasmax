@@ -95,6 +95,17 @@ Core files:
 
 To add technology, extend the data definitions with a unique ID, explicit equipment/subtype compatibility, source, limit, goal tags and evidence notes. `group` is organizational. Set `adjacency` only for documented relationships and `supercharge` to `null` when unverified. Keep schema IDs stable so saved builds remain usable. Bump the cache name in `sw.js` when publishing changed assets.
 
+## Tile layout fix (Command Deck v1.1)
+
+Technology slots now use a fixed three-row layout (coordinates, icon/identifier,
+module name/type) without the old square aspect ratio. This prevents installed
+module buttons from spilling into neighboring columns at tablet resolutions.
+The technology matrix enforces an 82px minimum cell width and scrolls inside
+its panel when there is not enough horizontal space; tablet layouts expand the
+blueprint to the full workspace width. Module names are capped at two lines,
+with full names available in the module inspector. The same live grid continues
+to be captured in PDF exports. Service-worker cache v7 refreshes the changes.
+
 ## Resources
 
 - [Hello Games release log](https://www.nomanssky.com/release-log/)
