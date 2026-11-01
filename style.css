@@ -2,3 +2,5 @@
 /* Prevent nested grid min-content widths from expanding the mobile page. */
 .workspace,.panel,.fields,label,.grid-scroll{min-width:0}
 @media(max-width:760px){main,.analysis-row{grid-template-columns:minmax(0,1fr)}.fields{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.system-icon{width:20px;height:20px;stroke:var(--tile-color);fill:none;stroke-width:1.6;stroke-linejoin:round;align-self:center;flex-shrink:0}.slot .tile-id{font-size:10px}.slot{min-height:85px}

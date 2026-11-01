@@ -5,7 +5,7 @@ export const goalNames={balanced:'Balanced explorer',combat:'Combat specialist',
 const palette=['#80c5eb','#c5a3f5','#f6b37e','#81d1b0','#ed8eaa','#d4cc82','#84abd9','#c3a2c5','#8bd0d2','#e29c75','#9ec98c','#b1b8f4','#e9ca98','#92c5bd','#cf93dc','#e6a6a4','#a8c4e3','#d0b18f','#b8cc91','#89a9c2','#c5b4e1','#a0d5cb','#dfafcb','#bdbb85'];
 const families=[...new Set([...technologies.map(t=>t.family),...parts.filter(p=>p.tech).map(p=>p.tech.family)])];
 function familyColor(i){if(i<palette.length)return palette[i];const h=((i*137.508)%360)/60,s=.48+(i%3)*.07,l=.65+(i%2)*.04,c=(1-Math.abs(2*l-1))*s,x=c*(1-Math.abs(h%2-1)),m=l-c/2;const channels=h<1?[c,x,0]:h<2?[x,c,0]:h<3?[0,c,x]:h<4?[0,x,c]:h<5?[x,0,c]:[c,0,x];return '#'+channels.map(v=>Math.round((v+m)*255).toString(16).padStart(2,'0')).join('');}
-export function decorate(m){const i=families.indexOf(m.family);return{...m,color:familyColor(i),short:m.family.split('-').map(w=>w.slice(0,3).toUpperCase()).join('').slice(0,6)};}
+export function decorate(m){const i=families.indexOf(m.family);const iconKind=m.tags.includes('combat')?'weapon':m.tags.includes('defense')?'shield':m.group==='habitation'||m.family==='cargo'?'cargo':m.tags.includes('mobility')?'engine':'system';return{...m,iconKind,color:familyColor(i),short:m.family.split('-').map(w=>w.slice(0,3).toUpperCase()).join('').slice(0,6)};}
 export const available=s=>technologies.filter(t=>t.equipment.includes(s.equipment)&&(!t.types||t.types.includes(s.type)));
 export const scLimit=s=>equipment[s.equipment].scLimit??({C:1,B:2,A:3,S:4}[s.class]??0);
 export function capacity(s){const e=equipment[s.equipment];return e.capacityOverrides?.[s.type]?.[s.class]??e.capacityByClass?.[s.class]??e.capacityByType?.[s.type]??e.width*e.height;}
